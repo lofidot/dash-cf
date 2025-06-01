@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function Dashboard({ user, supabase }) {
   const [subscription, setSubscription] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Call your API endpoint (Cloudflare Function)
@@ -16,6 +17,28 @@ export default function Dashboard({ user, supabase }) {
 
   const isPremium = subscription && subscription.status === 'active';
 
+  async function handleUpgrade() {
+    setLoading(true);
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: user.email,
+        userId: user.id,
+        // Optionally pass product_id, request_id, metadata, success_url
+        request_id: user.id,
+        success_url: window.location.origin,
+      })
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Failed to start checkout.');
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
       <h1 className="text-3xl font-bold mb-4">Welcome, {user.email}</h1>
@@ -24,7 +47,13 @@ export default function Dashboard({ user, supabase }) {
         {subscription ? subscription.status || 'No subscription' : "Loading..."}
       </div>
       {!isPremium && (
-        <a href={subscription?.url || '#'} className="bg-green-600 text-white px-4 py-2 rounded">Upgrade to Plus</a>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded"
+          onClick={handleUpgrade}
+          disabled={loading}
+        >
+          {loading ? "Redirecting..." : "Upgrade to Plus"}
+        </button>
       )}
       {isPremium && (
         <div style={{height: "80vh", width: "100%", maxWidth: 900, border: "1px solid #ccc", marginTop: 20}}>
