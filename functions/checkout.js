@@ -1,21 +1,31 @@
 export async function onRequestPost(context) {
-  const { userId, email } = await context.request.json();
+  const body = await context.request.json();
+  const { userId, email, product_id, request_id, metadata, success_url } = body;
   const CREEM_API_KEY = context.env.CREEM_API_KEY;
 
-  const res = await fetch('https://api.creem.io/v1/checkout/session', {
+  // Use a default product_id if not provided
+  const PRODUCT_ID = product_id || 'prod_7BFwqeQGeKekfu9nPj8h9m'; // TODO: Replace with your actual product ID
+
+  // Build the payload for Creem
+  const payload = {
+    product_id: PRODUCT_ID,
+    customer: { email }, // pre-fill email
+  };
+  if (userId) payload.metadata = { userId, ...(metadata || {}) };
+  if (request_id) payload.request_id = request_id;
+  if (success_url) payload.success_url = success_url;
+
+  const res = await fetch('https://api.creem.io/v1/checkouts', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${CREEM_API_KEY}`,
-      'Content-Type': 'application/json'
+      'x-api-key': CREEM_API_KEY,
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      customer: { id: userId, email }
-      // ...other required fields
-    })
+    body: JSON.stringify(payload),
   });
   const data = await res.json();
 
-  return new Response(JSON.stringify({ url: data.url }), {
+  return new Response(JSON.stringify({ url: data.checkout_url }), {
     headers: { "Content-Type": "application/json" }
   });
 } 
