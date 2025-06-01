@@ -4,7 +4,7 @@ export async function onRequestPost(context) {
   const CREEM_API_KEY = context.env.CREEM_API_KEY;
 
   // Use a default product_id if not provided
-  const PRODUCT_ID = product_id || 'prod_7BFwqeQGeKekfu9nPj8h9m'; // TODO: Replace with your actual product ID
+  const PRODUCT_ID = product_id || 'prod_3Fti6u4wp141TAXBwlAdId'; // TODO: Replace with your actual product ID
 
   // Build the payload for Creem
   const payload = {
