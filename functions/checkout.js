@@ -6,7 +6,7 @@ export async function onRequestPost(context) {
 
     // Get environment variables
     const CREEM_API_KEY = context.env.CREEM_API_KEY;
-    const DEFAULT_PRODUCT_ID = context.env.CREEM_PRODUCT_ID || 'prod_7BFwqeQGeKekfu9nPj8h9m';
+    const DEFAULT_PRODUCT_ID = context.env.CREEM_PRODUCT_ID || 'prod_3Fti6u4wp141TAXBwlAdId';
 
     // Validate required fields
     if (!email) {
