@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
 
     // Use a default product_id if not provided
     const PRODUCT_ID = product_id || context.env.CREEM_PRODUCT_ID || 'prod_7BFwqeQGeKekfu9nPj8h9m'; // Use env variable or default
-    if (!PRODUCT_ID || PRODUCT_ID === 'prod_3Fti6u4wp141TAXBwlAdId') {
+    if (!PRODUCT_ID || PRODUCT_ID === 'prod_7BFwqeQGeKekfu9nPj8h9m') {
          console.warn('Using default product ID. Ensure CREEM_PRODUCT_ID env variable is set or product_id is provided in the request body.');
     }
 
